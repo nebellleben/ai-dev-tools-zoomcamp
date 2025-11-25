@@ -55,8 +55,8 @@ ROOT_URLCONF = "todo_project.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
-        "APP_DIRS": True,
+        "DIRS": [BASE_DIR / "templates"],  # Project-level templates directory (optional)
+        "APP_DIRS": True,  # Automatically finds templates in each app's templates/ directory
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.request",
