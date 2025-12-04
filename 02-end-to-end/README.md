@@ -166,6 +166,33 @@ The platform uses **Monaco Editor** (the same editor that powers VS Code) for sy
 
 When switching languages, the editor automatically updates the syntax highlighting. If the code is empty or matches the default template, it will load a language-appropriate template.
 
+### Code Execution (WASM)
+
+The platform supports **secure code execution in the browser** using WebAssembly (WASM). Code execution happens entirely in the browser - no code is sent to the server for security reasons.
+
+**Supported Languages:**
+- ✅ **JavaScript** - Native browser execution with console output capture
+- ✅ **Python** - Executed via **Pyodide** (Python compiled to WASM)
+
+**Pyodide** is the library used for compiling Python to WebAssembly. It's the standard library used by AI tools and development platforms for running Python code securely in the browser. Pyodide is maintained by Mozilla and provides a full Python 3.x runtime compiled to WebAssembly.
+
+**Features:**
+- Secure execution - all code runs in the browser sandbox
+- No server-side execution - protects server resources
+- Real-time output - see results immediately
+- Error handling - clear error messages for debugging
+- Python standard library support via Pyodide
+
+**How it works:**
+1. JavaScript code executes natively in the browser using the Function constructor
+2. Python code is executed using Pyodide, which:
+   - Loads Python runtime from CDN (first load may take a few seconds)
+   - Compiles Python to WebAssembly
+   - Executes in a secure browser sandbox
+   - Captures stdout/stderr for display
+
+**Note:** The first time Python code is executed, Pyodide needs to download the Python runtime (~10MB) from CDN. This is a one-time download that's cached by the browser.
+
 ### Technologies Used
 
 **Frontend:**
@@ -174,6 +201,7 @@ When switching languages, the editor automatically updates the syntax highlighti
 - Monaco Editor (syntax highlighting with semantic highlighting)
 - Socket.io Client (WebSocket)
 - UUID (room ID generation)
+- **Pyodide** (Python to WASM compilation for secure browser execution)
 
 **Backend:**
 - Express.js
@@ -238,3 +266,6 @@ For security reasons, we don't want to execute code directly on the server. Inst
 
 Which library did AI use for compiling Python to WASM?
 
+> Let's add code execution. For security reasons, we don't want to execute code directly on the server. Instead, let's use WASM to execute the code only in the browser.
+
+---
