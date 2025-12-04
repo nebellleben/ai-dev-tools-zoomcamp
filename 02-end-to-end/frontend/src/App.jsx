@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import CodeEditor from './components/CodeEditor';
 import CodeExecutor from './components/CodeExecutor';
 import socketService from './services/socketService';
+import { getDefaultCode } from './utils/defaultCode';
 import './App.css';
 
 const LANGUAGES = [
@@ -18,11 +19,12 @@ const LANGUAGES = [
 
 function App() {
   const [roomId, setRoomId] = useState('');
-  const [code, setCode] = useState('// Welcome to the coding interview platform!\n// Start coding here...\n\nfunction hello() {\n  console.log("Hello, World!");\n}\n\nhello();');
+  const [code, setCode] = useState(getDefaultCode('javascript'));
   const [language, setLanguage] = useState('javascript');
   const [connectedUsers, setConnectedUsers] = useState(0);
   const [isHost, setIsHost] = useState(false);
   const codeRef = useRef(code);
+  const previousLanguageRef = useRef(language);
 
   useEffect(() => {
     // Check if room ID exists in URL
@@ -66,8 +68,27 @@ function App() {
   }, []);
 
   const handleLanguageChange = useCallback((newLanguage) => {
+    // If language actually changed and code is empty or is default code for previous language,
+    // set default code for new language
+    if (newLanguage !== previousLanguageRef.current) {
+      const currentCode = codeRef.current;
+      const previousDefault = getDefaultCode(previousLanguageRef.current);
+      
+      // If current code is empty or matches previous language's default, use new language's default
+      if (!currentCode.trim() || currentCode === previousDefault) {
+        const newDefaultCode = getDefaultCode(newLanguage);
+        setCode(newDefaultCode);
+        codeRef.current = newDefaultCode;
+        socketService.emitCodeUpdate(newDefaultCode, newLanguage);
+      } else {
+        // Just update language, keep existing code
+        socketService.emitCodeUpdate(codeRef.current, newLanguage);
+      }
+      
+      previousLanguageRef.current = newLanguage;
+    }
+    
     setLanguage(newLanguage);
-    socketService.emitCodeUpdate(codeRef.current, newLanguage);
   }, []);
 
   const copyRoomLink = () => {

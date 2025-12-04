@@ -148,12 +148,30 @@ The OpenAPI specification is available in `openapi.yaml`. It documents:
 - REST API endpoints for room management
 - WebSocket events for real-time collaboration
 
+### Syntax Highlighting
+
+The platform uses **Monaco Editor** (the same editor that powers VS Code) for syntax highlighting. The following features are supported:
+
+- ✅ **JavaScript** - Full syntax highlighting with semantic highlighting
+- ✅ **Python** - Full syntax highlighting with semantic highlighting
+- ✅ **Java, C++, C#, Go, Rust, TypeScript** - Syntax highlighting support
+
+**Enhanced Features:**
+- Color-coded brackets and parentheses
+- Semantic highlighting (variables, functions, keywords)
+- Line highlighting
+- Format on paste and type
+- Auto-indentation
+- Code folding
+
+When switching languages, the editor automatically updates the syntax highlighting. If the code is empty or matches the default template, it will load a language-appropriate template.
+
 ### Technologies Used
 
 **Frontend:**
 - React 19
 - Vite
-- Monaco Editor (syntax highlighting)
+- Monaco Editor (syntax highlighting with semantic highlighting)
 - Socket.io Client (WebSocket)
 - UUID (room ID generation)
 
@@ -209,3 +227,14 @@ What's the command you have in `package.json` for `npm dev` for running both?
 Let's now add support for syntax highlighting for JavaScript and Python.
 
 > add support for syntax highlighting for JavaScript and Python
+
+---
+
+##Question 5: Code Execution
+
+Now let's add code execution.
+
+For security reasons, we don't want to execute code directly on the server. Instead, let's use WASM to execute the code only in the browser.
+
+Which library did AI use for compiling Python to WASM?
+

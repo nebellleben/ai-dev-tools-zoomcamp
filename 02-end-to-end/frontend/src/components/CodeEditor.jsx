@@ -32,6 +32,27 @@ const CodeEditor = ({ code, language, onCodeChange, onLanguageChange, readOnly =
 
   const handleEditorDidMount = (editor, monaco) => {
     editorRef.current = editor;
+    
+    // Configure Monaco Editor for better syntax highlighting
+    if (monaco) {
+      // Set up additional language configurations if needed
+      // JavaScript and Python are supported by default
+      
+      // Configure editor options for better syntax highlighting
+      editor.updateOptions({
+        // Enable syntax highlighting features
+        colorDecorators: true,
+        bracketPairColorization: {
+          enabled: true,
+        },
+        // Improve syntax highlighting visibility
+        renderLineHighlight: 'all',
+        // Enable semantic highlighting
+        semanticHighlighting: {
+          enabled: true,
+        },
+      });
+    }
   };
 
   const handleEditorChange = (value) => {
@@ -55,6 +76,23 @@ const CodeEditor = ({ code, language, onCodeChange, onLanguageChange, readOnly =
           fontSize: 14,
           wordWrap: 'on',
           automaticLayout: true,
+          // Enhanced syntax highlighting options
+          colorDecorators: true,
+          bracketPairColorization: {
+            enabled: true,
+          },
+          renderLineHighlight: 'all',
+          semanticHighlighting: {
+            enabled: true,
+          },
+          // Language-specific formatting
+          formatOnPaste: true,
+          formatOnType: true,
+          // Improve code readability
+          lineNumbers: 'on',
+          renderWhitespace: 'selection',
+          tabSize: 2,
+          insertSpaces: true,
         }}
       />
     </div>
