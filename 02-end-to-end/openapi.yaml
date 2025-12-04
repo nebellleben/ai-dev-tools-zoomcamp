@@ -1,0 +1,171 @@
+openapi: 3.0.0
+info:
+  title: Code Interview Platform API
+  description: |
+    API for the online coding interview platform. Supports real-time code collaboration
+    through WebSocket connections and REST endpoints for room management.
+  version: 1.0.0
+  contact:
+    name: API Support
+
+servers:
+  - url: http://localhost:3001
+    description: Development server
+  - url: https://api.example.com
+    description: Production server
+
+paths:
+  /api/rooms:
+    post:
+      summary: Create a new interview room
+      description: Creates a new room for coding interviews
+      operationId: createRoom
+      tags:
+        - Rooms
+      responses:
+        '201':
+          description: Room created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Room'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  
+  /api/rooms/{roomId}:
+    get:
+      summary: Get room information
+      description: Retrieves information about a specific room
+      operationId: getRoom
+      tags:
+        - Rooms
+      parameters:
+        - name: roomId
+          in: path
+          required: true
+          description: The unique identifier of the room
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Room information retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Room'
+        '404':
+          description: Room not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    Room:
+      type: object
+      required:
+        - roomId
+        - createdAt
+        - userCount
+      properties:
+        roomId:
+          type: string
+          format: uuid
+          description: Unique identifier for the room
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the room was created
+          example: "2025-01-15T10:30:00Z"
+        userCount:
+          type: integer
+          minimum: 0
+          description: Number of users currently in the room
+          example: 2
+        code:
+          type: string
+          description: Current code content in the room
+          example: "function hello() {\n  console.log('Hello, World!');\n}"
+        language:
+          type: string
+          enum: [javascript, python, java, cpp, csharp, go, rust, typescript]
+          description: Programming language of the code
+          example: "javascript"
+    
+    CodeUpdate:
+      type: object
+      required:
+        - roomId
+        - code
+        - language
+      properties:
+        roomId:
+          type: string
+          format: uuid
+          description: Unique identifier for the room
+        code:
+          type: string
+          description: The code content
+        language:
+          type: string
+          enum: [javascript, python, java, cpp, csharp, go, rust, typescript]
+          description: Programming language of the code
+    
+    UserJoined:
+      type: object
+      required:
+        - userCount
+      properties:
+        userCount:
+          type: integer
+          minimum: 0
+          description: Total number of users in the room after join
+    
+    UserLeft:
+      type: object
+      required:
+        - userCount
+      properties:
+        userCount:
+          type: integer
+          minimum: 0
+          description: Total number of users in the room after leave
+    
+    Error:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          description: Error message
+          example: "Room not found"
+        code:
+          type: string
+          description: Error code
+          example: "ROOM_NOT_FOUND"
+
+  # WebSocket events documentation
+  # Note: OpenAPI 3.0 doesn't natively support WebSocket, but we document the events here
+  # WebSocket Connection: ws://localhost:3001
+  # 
+  # Client -> Server Events:
+  #   - join-room: { roomId: string }
+  #   - code-update: { roomId: string, code: string, language: string }
+  #
+  # Server -> Client Events:
+  #   - code-update: { code: string, language: string }
+  #   - user-joined: { userCount: number }
+  #   - user-left: { userCount: number }
+
+tags:
+  - name: Rooms
+    description: Room management operations
+

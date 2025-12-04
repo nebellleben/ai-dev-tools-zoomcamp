@@ -1,0 +1,149 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #1e1e1e;
+  color: #d4d4d4;
+  overflow: hidden;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: #252526;
+  border-bottom: 1px solid #3e3e42;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.header-left h1 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.room-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 14px;
+}
+
+.room-id {
+  color: #cccccc;
+  font-family: monospace;
+  background-color: #3e3e42;
+  padding: 6px 12px;
+  border-radius: 4px;
+}
+
+.user-count {
+  color: #4ec9b0;
+}
+
+.share-button {
+  padding: 8px 16px;
+  background-color: #007acc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.share-button:hover {
+  background-color: #005a9e;
+}
+
+.main-container {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.editor-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  border-right: 1px solid #3e3e42;
+}
+
+.editor-header {
+  padding: 10px 15px;
+  background-color: #2d2d30;
+  border-bottom: 1px solid #3e3e42;
+  display: flex;
+  align-items: center;
+}
+
+.language-select {
+  padding: 6px 12px;
+  background-color: #3e3e42;
+  color: #cccccc;
+  border: 1px solid #555;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
+}
+
+.language-select:hover {
+  background-color: #454545;
+}
+
+.language-select:focus {
+  border-color: #007acc;
+}
+
+.editor-content {
+  flex: 1;
+  overflow: hidden;
+}
+
+.executor-panel {
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  background-color: #1e1e1e;
+}
+
+@media (max-width: 768px) {
+  .main-container {
+    flex-direction: column;
+  }
+
+  .executor-panel {
+    width: 100%;
+    height: 300px;
+  }
+
+  .app-header {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+}
