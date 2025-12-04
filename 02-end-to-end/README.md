@@ -258,7 +258,7 @@ Let's now add support for syntax highlighting for JavaScript and Python.
 
 ---
 
-##Question 5: Code Execution
+## Question 5: Code Execution
 
 Now let's add code execution.
 
