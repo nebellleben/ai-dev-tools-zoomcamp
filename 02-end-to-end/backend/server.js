@@ -2,6 +2,7 @@ const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 const cors = require('cors');
+const crypto = require('crypto');
 require('dotenv').config();
 
 const app = express();
@@ -28,16 +29,26 @@ const rooms = new Map();
 
 // REST API Routes
 app.post('/api/rooms', (req, res) => {
-  const roomId = req.body.roomId || require('crypto').randomUUID();
-  const room = {
-    roomId,
-    createdAt: new Date().toISOString(),
-    userCount: 0,
-    code: '',
-    language: 'javascript',
-  };
-  rooms.set(roomId, room);
-  res.status(201).json(room);
+  try {
+    let roomId;
+    if (req.body && req.body.roomId) {
+      roomId = req.body.roomId;
+    } else {
+      roomId = crypto.randomUUID();
+    }
+    const room = {
+      roomId,
+      createdAt: new Date().toISOString(),
+      userCount: 0,
+      code: '',
+      language: 'javascript',
+    };
+    rooms.set(roomId, room);
+    res.status(201).json(room);
+  } catch (error) {
+    console.error('Error creating room:', error);
+    res.status(500).json({ message: 'Error creating room', error: error.message });
+  }
 });
 
 app.get('/api/rooms/:roomId', (req, res) => {
@@ -137,24 +148,34 @@ io.on('connection', (socket) => {
         io.to(socket.roomId).emit('user-left', { userCount: room.userCount });
 
         // Clean up empty rooms after a delay (optional)
+        // Store timeout ID so we can clear it in tests
         if (room.userCount === 0) {
-          setTimeout(() => {
+          const timeoutId = setTimeout(() => {
             const currentRoom = rooms.get(socket.roomId);
             if (currentRoom && currentRoom.userCount === 0) {
               rooms.delete(socket.roomId);
-              console.log(`Room ${socket.roomId} deleted (empty)`);
+              if (process.env.NODE_ENV !== 'test') {
+                console.log(`Room ${socket.roomId} deleted (empty)`);
+              }
             }
           }, 60000); // Delete after 1 minute of being empty
+          // Store timeout ID on room for cleanup if needed
+          room._cleanupTimeout = timeoutId;
         }
       }
     }
   });
 });
 
-const PORT = process.env.PORT || 3001;
+// Export for testing
+module.exports = { app, server, io, rooms };
 
-server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`WebSocket server ready for connections`);
-});
+// Only start server if this file is run directly
+if (require.main === module) {
+  const PORT = process.env.PORT || 3001;
+  server.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    console.log(`WebSocket server ready for connections`);
+  });
+}
 

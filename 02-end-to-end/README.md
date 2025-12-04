@@ -130,3 +130,7 @@ The OpenAPI specification is available in `openapi.yaml`. It documents:
 
 ---
 ## Question 2:
+
+Ask AI to write integration tests that check that the interaction between client and server works.
+
+> Write integration tests that check that the interaction between client and server works. Run the integration tests.
