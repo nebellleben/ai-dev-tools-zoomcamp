@@ -50,7 +50,29 @@ You can choose any technologies you want. For example:
 
 ### Setup Instructions
 
-#### Backend Setup
+#### Quick Start (Recommended)
+
+Run both frontend and backend together from the root directory:
+
+1. Install all dependencies:
+```bash
+npm run install:all
+```
+
+2. Start both servers:
+```bash
+npm run dev
+```
+
+This will start:
+- Backend on `http://localhost:3001`
+- Frontend on `http://localhost:5173`
+
+#### Individual Setup
+
+If you prefer to run them separately:
+
+##### Backend Setup
 
 1. Navigate to the backend directory:
 ```bash
@@ -75,7 +97,7 @@ npm start
 
 The backend will run on `http://localhost:3001`
 
-#### Frontend Setup
+##### Frontend Setup
 
 1. Navigate to the frontend directory:
 ```bash
@@ -101,12 +123,24 @@ The frontend will run on `http://localhost:5173` (or another port if 5173 is tak
 
 ### Usage
 
-1. Open the frontend in your browser (default: `http://localhost:5173`)
-2. A new room will be automatically created with a unique room ID
-3. Click "Share Link" to copy the room URL
-4. Share the link with candidates - they can join and collaborate in real-time
-5. All users can edit code, change languages, and see updates in real-time
-6. Use the "Run Code" button to execute JavaScript code in the browser
+1. Start both servers using `npm run dev` from the root directory
+2. Open the frontend in your browser (default: `http://localhost:5173`)
+3. A new room will be automatically created with a unique room ID
+4. Click "Share Link" to copy the room URL
+5. Share the link with candidates - they can join and collaborate in real-time
+6. All users can edit code, change languages, and see updates in real-time
+7. Use the "Run Code" button to execute JavaScript code in the browser
+
+### Available Scripts
+
+From the root directory (`02-end-to-end/`):
+
+- `npm run dev` - Start both backend and frontend in development mode
+- `npm start` - Start backend in production mode and frontend in dev mode
+- `npm run build` - Build the frontend for production
+- `npm test` - Run backend integration tests
+- `npm run test:watch` - Run tests in watch mode
+- `npm run install:all` - Install dependencies for root, backend, and frontend
 
 ### API Documentation
 
@@ -134,3 +168,44 @@ The OpenAPI specification is available in `openapi.yaml`. It documents:
 Ask AI to write integration tests that check that the interaction between client and server works.
 
 > Write integration tests that check that the interaction between client and server works. Run the integration tests.
+
+# Integration tests summary
+Test coverage
+REST API endpoints (4 tests):
+- ✅ Create room with auto-generated ID
+- ✅ Create room with provided roomId
+- ✅ Get room information for existing room
+- ✅ Return 404 for non-existent room
+WebSocket events (11 tests):
+- ✅ Client can join a room
+- ✅ Users are notified when someone joins
+- ✅ New users receive current room state
+- ✅ Invalid room ID handling
+- ✅ Code updates broadcast to other users
+- ✅ Room state updates when code changes
+- ✅ Language updates when changed
+- ✅ Updates don't broadcast to sender
+- ✅ Users are notified when someone leaves
+- ✅ User count decrements on disconnect
+End-to-end integration (1 test):
+- ✅ Complete interview session flow (REST API → WebSocket join → code updates → multi-user collaboration)
+
+Command to run tests:
+`cd /Users/kelvinchan/Documents/dev/aidev/ai-dev-tools-zoomcamp/02-end-to-end/backend && npm test`
+---
+
+## Question 3: Running Both Client and Server
+
+Now let's make it possible to run both client and server at the same time. Use `concurrently` for that.
+
+What's the command you have in `package.json` for `npm dev` for running both?
+
+> Make it possible to run both client and server at the same time. Use concurrently for that.
+
+---
+
+## Question 4: Syntax Highlighting
+
+Let's now add support for syntax highlighting for JavaScript and Python.
+
+> add support for syntax highlighting for JavaScript and Python

@@ -1,0 +1,26 @@
+{
+  "name": "code-interview-platform",
+  "version": "1.0.0",
+  "description": "Online coding interview platform with real-time collaboration",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -n \"backend,frontend\" -c \"blue,green\" \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
+    "start": "concurrently -n \"backend,frontend\" -c \"blue,green\" \"npm start --prefix backend\" \"npm run dev --prefix frontend\"",
+    "build": "npm run build --prefix frontend",
+    "test": "npm test --prefix backend",
+    "test:watch": "npm run test:watch --prefix backend",
+    "install:all": "npm install && npm install --prefix backend && npm install --prefix frontend"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "keywords": [
+    "coding-interview",
+    "real-time",
+    "collaboration",
+    "websocket"
+  ],
+  "author": "",
+  "license": "ISC"
+}
+
