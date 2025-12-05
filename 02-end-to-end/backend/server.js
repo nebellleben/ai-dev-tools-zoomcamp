@@ -3,15 +3,22 @@ const http = require('http');
 const { Server } = require('socket.io');
 const cors = require('cors');
 const crypto = require('crypto');
+const path = require('path');
 require('dotenv').config();
 
 const app = express();
 const server = http.createServer(app);
 
+// Determine if we're in production (serving built frontend)
+const isProduction = process.env.NODE_ENV === 'production';
+const frontendOrigin = isProduction 
+  ? process.env.FRONTEND_URL || 'http://localhost:3001'
+  : process.env.FRONTEND_URL || 'http://localhost:5173';
+
 // Configure CORS for Socket.io
 const io = new Server(server, {
   cors: {
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    origin: frontendOrigin,
     methods: ['GET', 'POST'],
     credentials: true,
   },
@@ -19,10 +26,15 @@ const io = new Server(server, {
 
 // Middleware
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: frontendOrigin,
   credentials: true,
 }));
 app.use(express.json());
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+});
 
 // In-memory storage for rooms
 const rooms = new Map();
@@ -64,6 +76,26 @@ app.get('/api/rooms/:roomId', (req, res) => {
   
   res.json(room);
 });
+
+// Serve static files from frontend build in production
+if (isProduction) {
+  const frontendBuildPath = path.join(__dirname, '../frontend/dist');
+  
+  // Serve static assets first
+  app.use(express.static(frontendBuildPath));
+  
+  // Serve index.html for all non-API routes (SPA routing)
+  // This must be last to catch all routes not handled by API
+  // Express 5.x requires using app.use() for catch-all routes instead of app.get('*')
+  app.use((req, res, next) => {
+    // Don't serve index.html for API routes or WebSocket
+    if (req.path.startsWith('/api/') || req.path.startsWith('/socket.io/')) {
+      return next();
+    }
+    // Serve index.html for all other routes (SPA routing)
+    res.sendFile(path.join(frontendBuildPath, 'index.html'));
+  });
+}
 
 // WebSocket connection handling
 io.on('connection', (socket) => {

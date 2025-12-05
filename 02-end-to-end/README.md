@@ -208,6 +208,83 @@ The platform supports **secure code execution in the browser** using WebAssembly
 - Socket.io (WebSocket server)
 - CORS (cross-origin support)
 
+### Docker Containerization
+
+The application is containerized using Docker with a multi-stage build process. Both backend and frontend are served from a single container.
+
+**Base Image:** `node:20-alpine` (Node.js 20 LTS on Alpine Linux for smaller image size)
+
+**Docker Features:**
+- Multi-stage build for optimized image size
+- Frontend built in separate stage
+- Backend dependencies installed separately
+- Non-root user for security
+- Proper signal handling with dumb-init
+- Health checks included
+
+**Building the Docker Image:**
+
+```bash
+# Build the image
+docker build -t code-interview-platform .
+
+# Or using docker-compose
+docker-compose build
+```
+
+**Running with Docker:**
+
+```bash
+# Run the container
+docker run -p 3001:3001 code-interview-platform
+
+# Or using docker-compose
+docker-compose up
+```
+
+**Docker Compose:**
+
+The `docker-compose.yml` file includes:
+- Service configuration
+- Port mapping (3001:3001)
+- Environment variables
+- Health checks
+- Restart policies
+
+**Environment Variables:**
+
+- `NODE_ENV=production` - Production mode
+- `PORT=3001` - Server port
+- `FRONTEND_URL=http://localhost:3001` - Frontend URL (for CORS)
+
+**Access the Application:**
+
+Once running, access the application at:
+- Frontend: `http://localhost:3001`
+- API: `http://localhost:3001/api/rooms`
+- WebSocket: `ws://localhost:3001`
+
+**Cloud Deployment:**
+
+- **AWS Deployment:** See [AWS_DEPLOYMENT.md](./AWS_DEPLOYMENT.md) for detailed AWS deployment guides
+  - AWS App Runner (easiest, recommended)
+  - AWS ECS with Fargate (production-ready)
+  - AWS Elastic Beanstalk (simpler alternative)
+  
+- **Other Platforms:** See [DEPLOYMENT.md](./DEPLOYMENT.md) for other cloud options:
+  - Railway (easiest, recommended for beginners)
+  - Render (simple, reliable)
+  - Fly.io (global edge deployment)
+  - Google Cloud Run (serverless)
+  - DigitalOcean App Platform
+
+**Docker Image Size:**
+
+The multi-stage build results in a smaller final image by:
+- Only including production dependencies
+- Excluding build tools and dev dependencies
+- Using Alpine Linux base image
+
 ---
 ## Question 2:
 
@@ -269,3 +346,20 @@ Which library did AI use for compiling Python to WASM?
 > Let's add code execution. For security reasons, we don't want to execute code directly on the server. Instead, let's use WASM to execute the code only in the browser.
 
 ---
+
+## Question 6: Containerization
+
+Now let's containerize our application. Ask AI to help you create a Dockerfile for the application. Put both backend and frontend in one container.
+
+What's the base image you used for your Dockerfile?
+
+> Containerize our application. Create a Dockerfile for the application. Put both backedn and frontend in one container.
+
+---
+
+## Question 7: Deployment
+
+Now let's deploy it. Choose a service to deploy your application.
+
+Which service did you use for deployment?
+
