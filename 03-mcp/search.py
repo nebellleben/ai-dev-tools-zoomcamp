@@ -166,12 +166,24 @@ def main():
         results = search_documents(index, query, num_results=5)
         
         for i, result in enumerate(results, 1):
-            print(f"{i}. {result.get('filename', 'Unknown')}")
-            print(f"   Score: {result.get('score', 0):.4f}")
+            # Handle different result formats - minsearch may return dicts or other formats
+            if isinstance(result, dict):
+                filename = result.get('filename', 'Unknown')
+                score = result.get('score', result.get('_score', 0))
+                content = result.get('content', '')
+            else:
+                # If result is not a dict, try to access attributes
+                filename = getattr(result, 'filename', 'Unknown')
+                score = getattr(result, 'score', getattr(result, '_score', 0))
+                content = getattr(result, 'content', '')
+            
+            print(f"{i}. {filename}")
+            if score:
+                print(f"   Score: {score:.4f}")
             # Show a snippet of content
-            content = result.get('content', '')
             snippet = content[:100].replace('\n', ' ') if content else ''
-            print(f"   Preview: {snippet}...")
+            if snippet:
+                print(f"   Preview: {snippet}...")
     
     print("\n" + "=" * 60)
     print("✓ Search implementation test completed!")
